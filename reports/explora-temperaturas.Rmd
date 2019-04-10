@@ -31,37 +31,50 @@ glimpse(climas)
 
 ### Quais os meses mais quentes e mais frios?
 
+
+'''{r}
+
 cg_max <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
 cg_max <- select(cg_max, tmax, semana, mes, ano, cidade)
-cg_max <- group_by(cg_max, mes,ano)
+cg_max <- group_by(cg_max, mes, ano)
 cg_max <- arrange(cg_max, mes, ano)
 cg_max <- summarise(cg_max, maximas = max(tmax))
 
  ggplot(data = cg_max, mapping = aes(x = mes , y = maximas, color = as.factor(ano) )) + 
   geom_point() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=ano),hjust=0, vjust=0)
   scale_x_continuous(breaks = seq(1,12,1)) +
-  scale_y_continuous(breaks = seq(15,40,1)) +
+  scale_y_continuous(breaks = seq(15,40,0.5)) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura máxima por mês (CG)")
-  
+'''
 
+'''{r}
 jp_max <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
 jp_max <- select(jp_max, tmax, semana, mes, ano, cidade)
-jp_max <- group_by(jp_max, mes,ano)
+jp_max <- group_by(jp_max, mes, ano)
 jp_max <- arrange(jp_max, mes, ano)
 jp_max <- summarise(jp_max, maximas = max(tmax))
 
  ggplot(data = jp_max, mapping = aes(x = mes , y = maximas, color = as.factor(ano) )) + 
   geom_point() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=ano),hjust=0, vjust=0)
   scale_x_continuous(breaks = seq(1,12,1)) +
-  scale_y_continuous(breaks = seq(15,40,1)) +
+  scale_y_continuous(breaks = seq(15,40,0.5)) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura máxima por mês (JP)")
 
+'''
+ 
 ### Qual foi o São João  mais frio de CG que está nos nossos dados?
 
-Vamos considerar as temperaturas máximas por ano no mês de junho
+'''
 
+Considerando as temperaturas máximas por ano no mês de junho:
+
+'''
 
 '''{r}
 
@@ -80,8 +93,11 @@ cg_mais_frio_max <- summarise(cg_mais_frio_max, maximas = max(tmax))
 
 '''
 
-Vamos considerar as temperaturas mínimas por ano no mês de junho
+'''
 
+Considerando as temperaturas mínimas por ano no mês de junho:
+
+'''
 
 '''{r}
 
@@ -100,6 +116,31 @@ cg_mais_frio_min <- summarise(cg_mais_frio_min, minimas = max(tmin))
 
 '''
 
+
+'''
+
+Considerando as temperaturas médias por ano no mês de junho:
+
+'''
+
+'''{r}
+
+cg_mais_frio_med <- filter(clima_cg_jp.semanal, cidade == "Campina Grande", mes == 6)
+cg_mais_frio_med <- select(cg_mais_frio_med, tmedia, semana, mes, ano, cidade)
+cg_mais_frio_med <- group_by(cg_mais_frio_med, ano)
+cg_mais_frio_med <- arrange(cg_mais_frio_med, ano)
+cg_mais_frio_med <- summarise(cg_mais_frio_med, medias = max(tmedia))
+
+  ggplot(data = cg_mais_frio_med, mapping = aes(x = ano, y = medias)) + 
+  geom_point() +
+  scale_x_continuous(breaks = seq(1995,2018,1)) +
+  scale_y_continuous(breaks = seq(15,40,0.1)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Variação da temperatura média por ano no mês de junho") 
+
+'''
+
+
 ## Chuva
 
 ### Quanto chove por semana em JP e CG?
@@ -108,19 +149,93 @@ Como é a distribuição do volume de chuvas por semana em JP e CG? A chuva vari
 
 ### No geral, onde chove mais?
 
-<!-- cg_mais_frio <- filter(clima_cg_jp.semanal, cidade == "Campina Grande") -->
-<!-- cg_mais_frio <- select(cg_mais_frio, chuva, semana, mes, ano, cidade) -->
-<!-- cg_mais_frio <- arrange(cg_mais_frio, semana) -->
-<!-- cg_mais_frio <- group_by(cg_mais_frio, cidade, ano, mes) -->
-<!-- cg_mais_frio <- summarise(cg_mais_frio, mais_chuva = max(chuva)) -->
-
-<!--     arrange(cg_mais_frio, ) -->
 
 
-<!--     ggplot(mapping = aes(x = cidade, y = mais_chuva)) +  -->
-<!--     geom_col() -->
+'''{r}
+
+cg_chuva <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
+cg_chuva <- select(cg_chuva, chuva, semana, mes, ano, cidade)
+cg_chuva <- group_by(cg_chuva, mes, ano)
+cg_chuva <- arrange(cg_chuva, mes, ano)
+cg_chuva <- summarise(cg_chuva, total_chuva = sum(chuva))
+
+ ggplot(data = cg_chuva, mapping = aes(x = mes , y = total_chuva)) + 
+  geom_point() +
+  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=mes + " " + ano),hjust=0, vjust=0) +
+  geom_hline(aes(yintercept=max(total_chuva)), show.legend = TRUE) +
+  scale_x_continuous(breaks = seq(1,12,1)) +
+#  scale_y_continuous(breaks = seq(15,40,0.5)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Total de chuva por mês (CG)")
+  
+'''
+
+
+'''{r}
+
+jp_chuva <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
+jp_chuva <- select(jp_chuva, chuva, semana, mes, ano, cidade)
+jp_chuva <- group_by(jp_chuva, mes, ano)
+jp_chuva <- arrange(jp_chuva, mes, ano)
+jp_chuva <- summarise(jp_chuva, total_chuva = sum(chuva))
+
+ ggplot(data = jp_chuva, mapping = aes(x = mes , y = total_chuva)) + 
+  geom_point() +
+  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=ano),hjust=0, vjust=0) + 
+  geom_hline(aes(yintercept=max(total_chuva)), show.legend = TRUE) +
+  scale_x_continuous(breaks = seq(1,12,1)) +
+#  scale_y_continuous(breaks = seq(15,40,0.5)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Total de chuva por mês (JP)")
+  
+'''
+
 
 ### A distribuição é diferente em meses específicos? 
 
-#teste
+'''{r}
 
+cg_chuva <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
+cg_chuva <- select(cg_chuva, chuva, semana, mes, ano, cidade)
+cg_chuva <- group_by(cg_chuva, mes, ano)
+cg_chuva <- arrange(cg_chuva, mes, ano)
+cg_chuva <- summarise(cg_chuva, total_chuva = sum(chuva))
+
+ ggplot(data = cg_chuva, mapping = aes(x = mes , y = total_chuva)) + 
+  geom_point() +
+  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=mes + " " + ano),hjust=0, vjust=0) + 
+  scale_x_continuous(breaks = seq(1,12,1)) +
+#  scale_y_continuous(breaks = seq(15,40,0.5)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Total de chuva por mês (CG)")
+  
+'''
+
+
+
+'''{r}
+
+jp_chuva <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
+jp_chuva <- select(jp_chuva, chuva, semana, mes, ano, cidade)
+jp_chuva <- group_by(jp_chuva, mes, ano)
+jp_chuva <- arrange(jp_chuva, mes, ano)
+jp_chuva <- summarise(jp_chuva, total_chuva = sum(chuva))
+
+ ggplot(data = jp_chuva, mapping = aes(x = mes , y = total_chuva)) + 
+  geom_point() +
+  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=ano),hjust=0, vjust=0) + 
+#  geom_vline(aes(xintercept=mean(total_chuva))) +
+  scale_x_continuous(breaks = seq(1,12,1)) +
+#  scale_y_continuous(breaks = seq(15,40,0.5)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Total de chuva por mês (JP)")
+
+'''
