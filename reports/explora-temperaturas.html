@@ -377,6 +377,21 @@ $(document).ready(function () {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#temperatura">Temperatura</a><ul>
+<li><a href="#onde-e-mais-quente">Onde é mais quente?</a></li>
+<li><a href="#as-temperaturas-maximas-semanais-o-pico-do-calor-sao-tao-diferentes-quanto-as-medias-mais">As temperaturas máximas semanais (o pico do calor) são tão diferentes quanto as médias? Mais?</a></li>
+<li><a href="#quais-os-meses-mais-quentes-e-mais-frios">Quais os meses mais quentes e mais frios?</a></li>
+<li><a href="#qual-foi-o-sao-joao-mais-frio-de-cg-que-esta-nos-nossos-dados">Qual foi o São João mais frio de CG que está nos nossos dados?</a></li>
+</ul></li>
+<li><a href="#chuva">Chuva</a><ul>
+<li><a href="#quanto-chove-por-semana-em-jp-e-cg">Quanto chove por semana em JP e CG?</a></li>
+<li><a href="#no-geral-onde-chove-mais">No geral, onde chove mais?</a></li>
+<li><a href="#a-distribuicao-e-diferente-em-meses-especificos">A distribuição é diferente em meses específicos?</a></li>
+</ul></li>
+</ul>
+</div>
 
 <pre class="r"><code>climas = read_csv(here::here(&quot;data/clima_cg_jp-semanal.csv&quot;), 
                   col_types = &quot;cTdddddd&quot;)
@@ -399,33 +414,44 @@ glimpse(climas)</code></pre>
 </div>
 <div id="as-temperaturas-maximas-semanais-o-pico-do-calor-sao-tao-diferentes-quanto-as-medias-mais" class="section level3">
 <h3>As temperaturas máximas semanais (o pico do calor) são tão diferentes quanto as médias? Mais?</h3>
-<!-- clima_cg_jp.semanal %>%  -->
-<!--     select(tmax, mes, ano, cidade) %>%  -->
-<!--     filter(cidade == "Campina Grande") %>% -->
-<!--     group_by(cidade, ano, mes) %>% -->
-<!--     sort(clima_cg_jp.semanal) -->
-<!--     order(clima_cg_jp.semanal$tmax) -->
-<!--     ggplot(mapping = aes(x = cidade, y = tmax)) +  -->
-<!--     geom_col() -->
 </div>
 <div id="quais-os-meses-mais-quentes-e-mais-frios" class="section level3">
 <h3>Quais os meses mais quentes e mais frios?</h3>
-<!-- cg_mais_quente <- filter(clima_cg_jp.semanal, cidade == "Campina Grande") -->
-<!-- cg_mais_quente <- select(cg_mais_frio, tmax, semana, mes, ano, cidade) -->
-<!-- cg_mais_quente <- group_by(cg_mais_frio, ano) -->
-<!-- cg_mais_quente <- arrange(cg_mais_frio, ano) -->
-<!-- cg_mais_quente <- summarise(cg_mais_frio, maximas = max(tmax)) -->
-<!--  ggplot(data = cg_mais_quente, mapping = aes(x = mes, y = maximas)) +  -->
-<!--   geom_point() + -->
-<!--   labs(title = "Variação da temperatura máxima") -->
+<p>Para saber os meses mais quentes e mais frios, consideraremos apenas as temperaturas máximas.</p>
+<p>Pelas temperaturas máximas de Campina Grande, podemos perceber que o mês mais quente é fevereiro, pois a concentração de pontos da temperatura máxima durante os anos e o ponto máximo está nesse mês. Já o mês mais frio é junho, pelo mesmo motivo.</p>
+<p>’’’{r}</p>
+<p>cg_max &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”) cg_max &lt;- select(cg_max, tmax, semana, mes, ano, cidade) cg_max &lt;- group_by(cg_max, mes, ano) cg_max &lt;- arrange(cg_max, mes, ano) cg_max &lt;- summarise(cg_max, maximas = max(tmax))</p>
+<p>ggplot(data = cg_max, mapping = aes(x = mes , y = maximas, color = as.factor(ano) )) + geom_point() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=ano),hjust=0, vjust=0) scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(15,40,0.5)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura máxima por mês (CG)”)</p>
+<p>’’’</p>
+<p>Pelas temperaturas máximas de João Pessoa, podemos perceber que o mês mais quente é março, pois a concentração de pontos da temperatura máxima durante os anos e o ponto máximo está nesse mês. Já o mês mais frio é julho, pelo mesmo motivo.</p>
+<p>’’’{r} jp_max &lt;- filter(clima_cg_jp.semanal, cidade == “João Pessoa”) jp_max &lt;- select(jp_max, tmax, semana, mes, ano, cidade) jp_max &lt;- group_by(jp_max, mes, ano) jp_max &lt;- arrange(jp_max, mes, ano) jp_max &lt;- summarise(jp_max, maximas = max(tmax))</p>
+<p>ggplot(data = jp_max, mapping = aes(x = mes , y = maximas, color = as.factor(ano) )) + geom_point() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=ano),hjust=0, vjust=0) scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(15,40,0.5)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura máxima por mês (JP)”)</p>
+<p>’’’</p>
 </div>
 <div id="qual-foi-o-sao-joao-mais-frio-de-cg-que-esta-nos-nossos-dados" class="section level3">
 <h3>Qual foi o São João mais frio de CG que está nos nossos dados?</h3>
-<p>Vamos considerar as temperaturas máximas</p>
-<p>’’’{r}</p>
-<p>cg_mais_frio &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”, mes == 6) cg_mais_frio &lt;- select(cg_mais_frio, tmax, semana, mes, ano, cidade) cg_mais_frio &lt;- group_by(cg_mais_frio, ano) cg_mais_frio &lt;- arrange(cg_mais_frio, ano) cg_mais_frio &lt;- summarise(cg_mais_frio, maximas = max(tmax))</p>
-<p>ggplot(data = cg_mais_frio, mapping = aes(x = ano, y = maximas)) + geom_point() + scale_x_continuous(breaks = seq(1995,2018,1)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura máxima”)</p>
 <p>’’’</p>
+<p>Considerando as temperaturas máximas por ano no mês de junho, vemos que ela ocorreu em 2004.</p>
+<p>’’’</p>
+<p>’’’{r}</p>
+<p>cg_mais_frio_max &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”, mes == 6) cg_mais_frio_max &lt;- select(cg_mais_frio_max, tmax, semana, mes, ano, cidade) cg_mais_frio_max &lt;- group_by(cg_mais_frio_max, ano) cg_mais_frio_max &lt;- arrange(cg_mais_frio_max, ano) cg_mais_frio_max &lt;- summarise(cg_mais_frio_max, maximas = max(tmax))</p>
+<p>ggplot(data = cg_mais_frio_max, mapping = aes(x = ano, y = maximas)) + geom_point() + scale_x_continuous(breaks = seq(1995,2018,1)) + scale_y_continuous(breaks = seq(15,40,0.1)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura máxima por ano no mês de junho”)</p>
+<p>’’’</p>
+<p>’’’</p>
+<p>Considerando as temperaturas mínimas por ano no mês de junho, vemos que ela ocorreu em 2008.</p>
+<p>’’’</p>
+<p>’’’{r}</p>
+<p>cg_mais_frio_min &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”, mes == 6) cg_mais_frio_min &lt;- select(cg_mais_frio_min, tmin, semana, mes, ano, cidade) cg_mais_frio_min &lt;- group_by(cg_mais_frio_min, ano) cg_mais_frio_min &lt;- arrange(cg_mais_frio_min, ano) cg_mais_frio_min &lt;- summarise(cg_mais_frio_min, minimas = max(tmin))</p>
+<p>ggplot(data = cg_mais_frio_min, mapping = aes(x = ano, y = minimas)) + geom_point() + scale_x_continuous(breaks = seq(1995,2018,1)) + scale_y_continuous(breaks = seq(15,40,0.1)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura mínima por ano no mês de junho”)</p>
+<p>’’’</p>
+<p>’’’</p>
+<p>Considerando as temperaturas médias por ano no mês de junho, vemos que ela ocorreu em 2008.</p>
+<p>’’’</p>
+<p>’’’{r}</p>
+<p>cg_mais_frio_med &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”, mes == 6) cg_mais_frio_med &lt;- select(cg_mais_frio_med, tmedia, semana, mes, ano, cidade) cg_mais_frio_med &lt;- group_by(cg_mais_frio_med, ano) cg_mais_frio_med &lt;- arrange(cg_mais_frio_med, ano) cg_mais_frio_med &lt;- summarise(cg_mais_frio_med, medias = max(tmedia))</p>
+<p>ggplot(data = cg_mais_frio_med, mapping = aes(x = ano, y = medias)) + geom_point() + # geom_text(aes(label=medias),hjust=0, vjust=0) + scale_x_continuous(breaks = seq(1995,2018,1)) + scale_y_continuous(breaks = seq(15,40,0.1)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Variação da temperatura média por ano no mês de junho”)</p>
+<p>’’’</p>
+<p>Como ocorreu a menor temperatura mínima e a menor média em 2008, podemos considerar que o mês de São João mais frio ocorreu em 2008.</p>
 </div>
 </div>
 <div id="chuva" class="section level2">
@@ -436,18 +462,31 @@ glimpse(climas)</code></pre>
 </div>
 <div id="no-geral-onde-chove-mais" class="section level3">
 <h3>No geral, onde chove mais?</h3>
-<!-- cg_mais_frio <- filter(clima_cg_jp.semanal, cidade == "Campina Grande") -->
-<!-- cg_mais_frio <- select(cg_mais_frio, chuva, semana, mes, ano, cidade) -->
-<!-- cg_mais_frio <- arrange(cg_mais_frio, semana) -->
-<!-- cg_mais_frio <- group_by(cg_mais_frio, cidade, ano, mes) -->
-<!-- cg_mais_frio <- summarise(cg_mais_frio, mais_chuva = max(chuva)) -->
-<!--     arrange(cg_mais_frio, ) -->
-<!--     ggplot(mapping = aes(x = cidade, y = mais_chuva)) +  -->
-<!--     geom_col() -->
+<p>Considere a distribuição total de chuvas durante os meses e a média em Campina Grande:</p>
+<p>’’’{r}</p>
+<p>cg_chuva &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”) cg_chuva &lt;- select(cg_chuva, chuva, semana, mes, ano, cidade) cg_chuva &lt;- group_by(cg_chuva, mes, ano) cg_chuva &lt;- arrange(cg_chuva, mes, ano) cg_chuva &lt;- summarise(cg_chuva, total_chuva = sum(chuva))</p>
+<p>ggplot(data = cg_chuva, mapping = aes(x = mes , y = total_chuva)) + geom_point() + geom_col() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=mes + &quot; &quot; + ano),hjust=0, vjust=0) + geom_hline(aes(yintercept=max(total_chuva)), show.legend = TRUE) + scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(0,5000,500)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Total de chuva por mês e média (CG)”)</p>
+<p>’’’</p>
+<p>Agora considere a distribuição total de chuvas durante os meses e a média em João Pessoa:</p>
+<p>’’’{r}</p>
+<p>jp_chuva &lt;- filter(clima_cg_jp.semanal, cidade == “João Pessoa”) jp_chuva &lt;- select(jp_chuva, chuva, semana, mes, ano, cidade) jp_chuva &lt;- group_by(jp_chuva, mes, ano) jp_chuva &lt;- arrange(jp_chuva, mes, ano) jp_chuva &lt;- summarise(jp_chuva, total_chuva = sum(chuva))</p>
+<p>ggplot(data = jp_chuva, mapping = aes(x = mes , y = total_chuva)) + geom_point() + geom_col() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=ano),hjust=0, vjust=0) + geom_hline(aes(yintercept=max(total_chuva)), show.legend = TRUE) + scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(0,10000,500)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Total de chuva por mês e média (JP)”)</p>
+<p>’’’</p>
+<p>Podemos ver que tanto a quantidade de chuvas durante os meses, quanto a média de chuvas é maior em João Pessoa.</p>
 </div>
 <div id="a-distribuicao-e-diferente-em-meses-especificos" class="section level3">
 <h3>A distribuição é diferente em meses específicos?</h3>
-<p>#teste</p>
+<p>Considere a distribuição de chuvas por mês em Campina Grande:</p>
+<p>’’’{r}</p>
+<p>cg_chuva &lt;- filter(clima_cg_jp.semanal, cidade == “Campina Grande”) cg_chuva &lt;- select(cg_chuva, chuva, semana, mes, ano, cidade) cg_chuva &lt;- group_by(cg_chuva, mes, ano) cg_chuva &lt;- arrange(cg_chuva, mes, ano) cg_chuva &lt;- summarise(cg_chuva, total_chuva = sum(chuva))</p>
+<p>ggplot(data = cg_chuva, mapping = aes(x = mes , y = total_chuva)) + geom_point() + # geom_col() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=mes + &quot; &quot; + ano),hjust=0, vjust=0) + scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(0,5000,50)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Total de chuva por mês (CG)”)</p>
+<p>’’’</p>
+<p>Agora considere a distribuição de chuvas por mês em João Pessoa:</p>
+<p>’’’{r}</p>
+<p>jp_chuva &lt;- filter(clima_cg_jp.semanal, cidade == “João Pessoa”) jp_chuva &lt;- select(jp_chuva, chuva, semana, mes, ano, cidade) jp_chuva &lt;- group_by(jp_chuva, mes, ano) jp_chuva &lt;- arrange(jp_chuva, mes, ano) jp_chuva &lt;- summarise(jp_chuva, total_chuva = sum(chuva))</p>
+<p>ggplot(data = jp_chuva, mapping = aes(x = mes , y = total_chuva)) + geom_point() + # geom_col() + # geom_boxplot(coef = 1000, width = .4) + # geom_text(aes(label=ano),hjust=0, vjust=0) + # geom_vline(aes(xintercept=mean(total_chuva))) + scale_x_continuous(breaks = seq(1,12,1)) + scale_y_continuous(breaks = seq(0,5000,50)) + theme(axis.text.x = element_text(angle = 90)) + labs(title = “Total de chuva por mês (JP)”)</p>
+<p>’’’</p>
+<p>Tanto em Campina Grande quanto em João Pessoa, podemos perceber de acordo com a distribuição que de setembro a abril são os meses que menos chove e de maio a agosto são os meses que mais chove. A distribuição muda durante os meses, mas nas duas cidades os meses que mais chove e que mais se tem seca são equivalentes.</p>
 </div>
 </div>
 
