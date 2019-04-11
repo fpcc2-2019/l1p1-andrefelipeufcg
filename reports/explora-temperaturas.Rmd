@@ -36,9 +36,9 @@ Para saber os meses mais quentes e mais frios, consideraremos apenas as temperat
 
 Pelas temperaturas máximas de Campina Grande, podemos perceber que o mês mais quente é fevereiro, pois a concentração de pontos da temperatura máxima durante os anos e o ponto máximo está nesse mês. Já o mês mais frio é junho, pelo mesmo motivo.
 
-'''{r}
+```{r}
 
-cg_max <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
+cg_max <- filter(climas, cidade == "Campina Grande")
 cg_max <- select(cg_max, tmax, semana, mes, ano, cidade)
 cg_max <- group_by(cg_max, mes, ano)
 cg_max <- arrange(cg_max, mes, ano)
@@ -53,13 +53,13 @@ cg_max <- summarise(cg_max, maximas = max(tmax))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura máxima por mês (CG)")
   
-'''
+```
 
 Pelas temperaturas máximas de João Pessoa, podemos perceber que o mês mais quente é março, pois a concentração de pontos da temperatura máxima durante os anos e o ponto máximo está nesse mês. Já o mês mais frio é julho, pelo mesmo motivo.
 
 
-'''{r}
-jp_max <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
+```{r}
+jp_max <- filter(climas, cidade == "João Pessoa")
 jp_max <- select(jp_max, tmax, semana, mes, ano, cidade)
 jp_max <- group_by(jp_max, mes, ano)
 jp_max <- arrange(jp_max, mes, ano)
@@ -74,19 +74,18 @@ jp_max <- summarise(jp_max, maximas = max(tmax))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura máxima por mês (JP)")
 
-'''
+```
  
 ### Qual foi o São João mais frio de CG que está nos nossos dados?
 
-'''
+
 
 Considerando as temperaturas máximas por ano no mês de junho, vemos que ela ocorreu em 2004.
 
-'''
 
-'''{r}
+```{r}
 
-cg_mais_frio_max <- filter(clima_cg_jp.semanal, cidade == "Campina Grande", mes == 6)
+cg_mais_frio_max <- filter(climas, cidade == "Campina Grande", mes == 6)
 cg_mais_frio_max <- select(cg_mais_frio_max, tmax, semana, mes, ano, cidade)
 cg_mais_frio_max <- group_by(cg_mais_frio_max, ano)
 cg_mais_frio_max <- arrange(cg_mais_frio_max, ano)
@@ -99,17 +98,16 @@ cg_mais_frio_max <- summarise(cg_mais_frio_max, maximas = max(tmax))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura máxima por ano no mês de junho") 
 
-'''
+```
 
-'''
 
 Considerando as temperaturas mínimas por ano no mês de junho, vemos que ela ocorreu em 2008.
 
-'''
 
-'''{r}
 
-cg_mais_frio_min <- filter(clima_cg_jp.semanal, cidade == "Campina Grande", mes == 6)
+```{r}
+
+cg_mais_frio_min <- filter(climas, cidade == "Campina Grande", mes == 6)
 cg_mais_frio_min <- select(cg_mais_frio_min, tmin, semana, mes, ano, cidade)
 cg_mais_frio_min <- group_by(cg_mais_frio_min, ano)
 cg_mais_frio_min <- arrange(cg_mais_frio_min, ano)
@@ -122,19 +120,15 @@ cg_mais_frio_min <- summarise(cg_mais_frio_min, minimas = max(tmin))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura mínima por ano no mês de junho") 
 
-'''
+```
 
-
-'''
 
 Considerando as temperaturas médias por ano no mês de junho, vemos que ela ocorreu em 2008.
 
 
-'''
+```{r}
 
-'''{r}
-
-cg_mais_frio_med <- filter(clima_cg_jp.semanal, cidade == "Campina Grande", mes == 6)
+cg_mais_frio_med <- filter(climas, cidade == "Campina Grande", mes == 6)
 cg_mais_frio_med <- select(cg_mais_frio_med, tmedia, semana, mes, ano, cidade)
 cg_mais_frio_med <- group_by(cg_mais_frio_med, ano)
 cg_mais_frio_med <- arrange(cg_mais_frio_med, ano)
@@ -148,7 +142,7 @@ cg_mais_frio_med <- summarise(cg_mais_frio_med, medias = max(tmedia))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Variação da temperatura média por ano no mês de junho") 
 
-'''
+```
 
 Como ocorreu a menor temperatura mínima e a menor média em 2008, podemos considerar que o mês de São João mais frio ocorreu em 2008.
 
@@ -163,9 +157,9 @@ Como é a distribuição do volume de chuvas por semana em JP e CG? A chuva vari
 
 Considere a distribuição total de chuvas durante os meses e a média em Campina Grande: 
 
-'''{r}
+```{r}
 
-cg_chuva <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
+cg_chuva <- filter(climas, cidade == "Campina Grande")
 cg_chuva <- select(cg_chuva, chuva, semana, mes, ano, cidade)
 cg_chuva <- group_by(cg_chuva, mes, ano)
 cg_chuva <- arrange(cg_chuva, mes, ano)
@@ -182,14 +176,14 @@ cg_chuva <- summarise(cg_chuva, total_chuva = sum(chuva))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Total de chuva por mês e média (CG)")
   
-'''
+```
 
 Agora considere a distribuição total de chuvas durante os meses e a média em João Pessoa: 
 
 
-'''{r}
+```{r}
 
-jp_chuva <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
+jp_chuva <- filter(climas, cidade == "João Pessoa")
 jp_chuva <- select(jp_chuva, chuva, semana, mes, ano, cidade)
 jp_chuva <- group_by(jp_chuva, mes, ano)
 jp_chuva <- arrange(jp_chuva, mes, ano)
@@ -206,7 +200,7 @@ jp_chuva <- summarise(jp_chuva, total_chuva = sum(chuva))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Total de chuva por mês e média (JP)")
   
-'''
+```
 
 Podemos ver que tanto a quantidade de chuvas durante os meses, quanto a média de chuvas é maior em João Pessoa.
 
@@ -216,9 +210,9 @@ Podemos ver que tanto a quantidade de chuvas durante os meses, quanto a média d
 
 Considere a distribuição de chuvas por mês em Campina Grande:
 
-'''{r}
+```{r}
 
-cg_chuva <- filter(clima_cg_jp.semanal, cidade == "Campina Grande")
+cg_chuva <- filter(climas, cidade == "Campina Grande")
 cg_chuva <- select(cg_chuva, chuva, semana, mes, ano, cidade)
 cg_chuva <- group_by(cg_chuva, mes, ano)
 cg_chuva <- arrange(cg_chuva, mes, ano)
@@ -234,15 +228,15 @@ cg_chuva <- summarise(cg_chuva, total_chuva = sum(chuva))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Total de chuva por mês (CG)")
   
-'''
+```
 
 Agora considere a distribuição de chuvas por mês em João Pessoa:
 
 
 
-'''{r}
+```{r}
 
-jp_chuva <- filter(clima_cg_jp.semanal, cidade == "João Pessoa")
+jp_chuva <- filter(climas, cidade == "João Pessoa")
 jp_chuva <- select(jp_chuva, chuva, semana, mes, ano, cidade)
 jp_chuva <- group_by(jp_chuva, mes, ano)
 jp_chuva <- arrange(jp_chuva, mes, ano)
@@ -259,7 +253,7 @@ jp_chuva <- summarise(jp_chuva, total_chuva = sum(chuva))
   theme(axis.text.x = element_text(angle = 90)) +
   labs(title = "Total de chuva por mês (JP)")
 
-'''
+```
 
 Tanto em Campina Grande quanto em João Pessoa, podemos perceber de acordo com a distribuição que de setembro a abril são os meses que menos chove e de maio a agosto são os meses que mais chove.
 A distribuição muda durante os meses, mas nas duas cidades os meses que mais chove e que mais se tem seca são equivalentes.
