@@ -263,4 +263,3 @@ jp_chuva <- summarise(jp_chuva, total_chuva = sum(chuva))
 
 Tanto em Campina Grande quanto em João Pessoa, podemos perceber de acordo com a distribuição que de setembro a abril são os meses que menos chove e de maio a agosto são os meses que mais chove.
 A distribuição muda durante os meses, mas nas duas cidades os meses que mais chove e que mais se tem seca são equivalentes.
-
