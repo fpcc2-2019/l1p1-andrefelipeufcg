@@ -3,9 +3,11 @@ title: "Revisão em grupo - Temperatura JP x CG"
 author: "André Felipe / Aline Costa / Igor Dantas"
 output:
     html_document:
+      code_folding: hide
       toc: true
     df_print: paged
 theme: sandstone
+
 ---
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
