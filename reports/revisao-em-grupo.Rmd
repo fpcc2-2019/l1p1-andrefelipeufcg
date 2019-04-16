@@ -1,0 +1,169 @@
+---
+title: "Revisão em grupo - Temperatura JP x CG"
+author: "André Felipe / Aline Costa / Igor Dantas"
+output:
+    html_document:
+      toc: true
+    df_print: paged
+theme: sandstone
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(here)
+library(lubridate)
+library(ggbeeswarm)
+library(ggplot2)
+theme_set(theme_bw())
+```
+
+```{r read}
+climas = read_csv(here::here("data/clima_cg_jp-semanal.csv"), 
+                  col_types = "cTdddddd")
+
+glimpse(climas)
+```
+
+### Qual foi o São João mais frio de CG que está nos nossos dados?
+
+Ao observar no gráfico as médias de temperatura em Campina Grande no mês de Junho nos últimos anos (sabendo que o São João ocorre neste mês), É posséível afirmar que o São João mais frio foi o do ano de 2015 (com uma média de 22.62 graus). Pode-se observar que o ano de 2011 foi um ano em que o São João teve uma média de temperatura quase igual ao ano de 2015 (com uma média de 22.66 graus).
+
+```{r}
+
+climas2 <- climas %>%
+    filter(ano >= 2009, mes == 6, cidade == "Campina Grande") %>%
+    group_by(ano) %>%
+    mutate(tmedia_sj = (sum(tmedia) / n())) %>% 
+    ungroup() %>% 
+    mutate(min_value = min(tmedia_sj)) %>% 
+    group_by(ano) %>%
+    summarise(tmedia_sj = (sum(tmedia) / n()),
+              min_value = min(min_value))
+
+
+climas_ano <- climas %>%
+    filter(ano >= 2009, mes == 6, cidade == "Campina Grande") %>%
+    group_by(ano)
+
+
+ggplot() +
+    geom_line(data = climas2, aes(x = ano, y = tmedia_sj, color = "salmon"), size = 1) +
+    geom_point(data = climas2, aes(x = ano, y = tmedia_sj, color = "salmon")) +
+    geom_line(data = climas2, aes(x = ano, y = min_value), color='steelblue', size=0.5) +
+    geom_point(data = climas_ano, aes(x = ano, y = tmedia), alpha = 2/10) +
+    scale_x_continuous(breaks = seq(2009, 2018, 1)) +
+    labs(
+        title = "Média das temperaturas no São João de Campina Grande",
+        x = "Ano",
+        y = "Temperaturas no mês de Junho"
+    ) +
+    theme(legend.position = "none")
+
+```
+
+### No geral, onde chove mais?
+
+Para responder a essa pergunta, vamos considerar a média de chuvas por mês a partir do ano de 2014 até 2018 (pontos e linhas coloridas), como também a média anual (linha em azul). Escolhemos esses anos pois esses tinham dados de todos os meses e para refletir uma realidade mais atual.
+
+Vamos observar o gráfico de chuvas para a cidade de Campina Grande:
+
+```{r}
+
+cg_chuva <- climas %>%
+            filter(cidade == "Campina Grande", ano > 2013 & ano < 2019) %>%
+            select(chuva, semana, mes, ano, cidade) %>%
+            group_by(mes, ano) %>%
+            arrange(mes, ano) %>%
+            summarise(media_chuva = sum(chuva) / n() )
+
+ ggplot(data = cg_chuva, mapping = aes(x = mes , y = media_chuva, color = as.factor(ano) )) + 
+  geom_point() +
+   geom_line() +
+#  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=mes + " " + ano),hjust=0, vjust=0) +
+  geom_hline(aes(yintercept=mean(media_chuva)), show.legend = FALSE, color = "blue") +
+  scale_x_continuous(breaks = seq(1,12,1)) +
+  scale_y_continuous(breaks = seq(0,100,5)) +
+#  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Média de chuva por mês e média anual (CG)",
+       x = "Mês", 
+       y = "Chuva (mm)",
+       color = "Anos")
+  
+```
+
+
+O mês que teve a maior média de chuvas em Campina Grande foi abril de 2018, onde choveu em torno de 43mm. Já a média anual durante os anos escolhidos em Campina Grande ficou em torno de 12mm.
+
+Agora vamos observar o gráfico de chuvas para a cidade de João Pessoa:
+
+
+```{r}
+
+jp_chuva <- climas %>%
+            filter(cidade == "João Pessoa", ano > 2013 & ano < 2019) %>%
+            select(chuva, semana, mes, ano, cidade) %>%
+            group_by(mes, ano) %>%
+            arrange(mes, ano) %>%
+            summarise(media_chuva = sum(chuva) / n() )
+
+ ggplot(data = jp_chuva, mapping = aes(x = mes , y = media_chuva, color = as.factor(ano) )) + 
+  geom_point() +
+   geom_line() +
+#  geom_col() +
+#  geom_boxplot(coef = 1000, width = .4) +
+#  geom_text(aes(label=mes + " " + ano),hjust=0, vjust=0) +
+  geom_hline(aes(yintercept=mean(media_chuva)), show.legend = FALSE, color = "blue") +
+  scale_x_continuous(breaks = seq(1,12,1)) +
+  scale_y_continuous(breaks = seq(0,100,10)) +
+#  theme(axis.text.x = element_text(angle = 90)) +
+  labs(title = "Média de chuva por mês e média anual (JP)",
+       x = "Mês", 
+       y = "Chuva (mm)",
+       color = "Anos")
+  
+```
+
+O mês que teve a maior média de chuvas em João Pessoa foi maio de 2017, onde choveu em torno de 95mm. Já a média anual durante os anos escolhidos em João Pessoa ficou em torno de 30mm.
+
+Portanto, podemos perceber pelos gráficos que tanto a média de chuva mensal quanto a média de chuvas anual é maior em João Pessoa.
+
+
+### Qual a distribuição das temperaturas no verão de João Pessoa?
+
+Vamos analisar a distribuição das temperaturas médias na estação do verão na cidade de João Pessoa. Para melhor comparar a tendência, vamos restringir os dados aos últimos 5 anos. 
+
+```{r}
+# nova coluna para estação
+climas = climas %>%  mutate(dia=lubridate::day(semana)) %>% mutate(estacao = if_else(mes>=4 & mes <=6, "outono", if_else(mes>=7 & mes <=9,  "inverno", if_else(mes>=9 & mes <=11,  "primavera", if_else(mes==12 | mes <=3,  "verao", "NA") ) ) ) )
+
+temp_verao_jp_ultimos_5_anos <- climas %>%
+  filter(cidade == "João Pessoa", ano > 2014, estacao == "verao") %>%
+  group_by(ano);
+
+ temp_verao_jp_ultimos_5_anos %>% 
+                            ggplot(aes(x = ano, y = tmedia, group = ano)) + 
+                                geom_boxplot(coef = 1000, width = .2) + 
+  # mostrar todos os boxplots em um só gráfico
+  # facet_wrap(~ano)
+  
+  # mostrar pontos
+  geom_jitter(width = 0.05,
+                alpha = 0.4,
+                color = "red") + 
+  # nomes formatados nos eixos
+  labs(
+        x = 'Ano',
+        y = "Temperatura média",
+        title = "Variação da temperatura média por ano (JP)"
+    ) + 
+  # visualizar melhor as temperaturas
+  scale_y_continuous(breaks = seq(15,40,0.1))
+
+```
+
+
+Algumas observações podem ser feitas a partir da visualização acima. Primeiro, nos últimos anos as temperaturas médias se concentraram entre 28.4 e 29.5 graus. O ano de 2017, em especial, registrou a maior mediana de temperatura nos últimos anos, aproximadamente 29.4ºC. 
+Considerando os anos registrados, não podemos afirmar com certeza sobre o aumento (ou diminuição) da temperatura média, porque não há uma tendência geral nos dados apresentados. Para isso, talvez para isso fosse necessário pegar um intervalo de tempo maior.
+
